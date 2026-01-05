@@ -8,12 +8,12 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://unpkg.com/wavesurfer.js@7"></script>
-    <!-- EmailJS SDK -->
+    
+    <!-- EmailJS SDK Integrated with your Public Key -->
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <script type="text/javascript">
         (function(){ 
-            // REPLACE "YOUR_PUBLIC_KEY" with your actual Public Key from EmailJS Account settings
-            emailjs.init("YOUR_PUBLIC_KEY"); 
+            emailjs.init("TTFNA7EiwsbcHqmPq"); 
         })();
     </script>
 
@@ -126,7 +126,6 @@
     </aside>
 </div>
 
-<!-- Player Area -->
 <div id="master-player">
     <div id="waveform-container"></div>
     <div class="player-flex">
@@ -290,7 +289,6 @@ function removeFromCart(index) { cart.splice(index, 1); renderC(); }
 function checkout() { if (cart.length === 0) return alert("Your cart is empty!"); document.getElementById('payment-modal').style.display = 'flex'; }
 function closePayment() { document.getElementById('payment-modal').style.display = 'none'; document.getElementById('pay-step-1').style.display = 'block'; document.getElementById('pay-step-2').style.display = 'none'; }
 
-// --- AUTOMATED EMAIL DELIVERY ---
 function goToStep2() {
     const name = document.getElementById('customer-name').value;
     const email = document.getElementById('customer-email').value;
@@ -307,7 +305,6 @@ function goToStep2() {
 function sendOrderEmail(cName, cEmail) {
     document.getElementById('payment-status').innerText = "Payment Verified! Delivering beats...";
     
-    // Variables matched exactly to your screenshot
     const templateParams = {
         customer_email: cEmail,
         customer_name: cName,
@@ -318,7 +315,7 @@ function sendOrderEmail(cName, cEmail) {
 
     emailjs.send("service_t7cblk3", "template_7nvo7c6", templateParams)
     .then(function() {
-        alert("PAYMENT SUCCESS! Your beats and receipt have been sent to " + cEmail);
+        alert("PAYMENT SUCCESS! Your beats have been sent to " + cEmail);
         cart = []; renderC(); closePayment();
     }, function(error) {
         alert("Payment verified, but email failed. Contact Steve Chriss.");
