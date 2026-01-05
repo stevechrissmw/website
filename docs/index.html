@@ -8,11 +8,12 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://unpkg.com/wavesurfer.js@7"></script>
-    
+
     <!-- EmailJS SDK -->
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <script type="text/javascript">
-        (function(){ emailjs.init("TTFNA7EiwsbcHqmPq"); })(); 
+        // API details are initialized here, hidden from the UI cards
+        (function(){ emailjs.init("TTFNA7EiwsbcHqmPq"); })();
     </script>
 
     <style>
@@ -31,29 +32,9 @@
         }
 
         body { font-family: 'Inter', sans-serif; margin:0; padding:0; background: var(--bg); color: var(--text); scroll-behavior: smooth; padding-bottom: 160px; }
-        
-        /* --- TOP-RIGHT ACCOUNT ICONS --- */
-        .top-right-auth {
-            position: absolute;
-            top: 25px;
-            right: 25px;
-            z-index: 1001;
-            display: flex;
-            gap: 25px;
-        }
-        .auth-icon-btn {
-            color: var(--secondary);
-            font-size: 1.4rem;
-            cursor: pointer;
-            transition: 0.3s;
-            background: none;
-            border: none;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 5px;
-        }
+
+        .top-right-auth { position: absolute; top: 25px; right: 25px; z-index: 1001; display: flex; gap: 25px; }
+        .auth-icon-btn { color: var(--secondary); font-size: 1.4rem; cursor: pointer; transition: 0.3s; background: none; border: none; padding: 0; display: flex; flex-direction: column; align-items: center; gap: 5px; }
         .auth-icon-btn span { font-size: 0.6rem; color: var(--text-dim); text-transform: uppercase; font-weight: 800; }
         .auth-icon-btn:hover { color: var(--primary); transform: scale(1.1); }
 
@@ -62,41 +43,54 @@
         .studio-tag { background: rgba(0,0,0,0.5); padding: 6px 15px; border-radius: 30px; display: inline-flex; align-items: center; gap: 10px; font-size: 0.8rem; margin-top: 12px; border: 1px solid #333; }
         .pulse { width: 8px; height: 8px; background: var(--secondary); border-radius: 50%; animation: pulse-glow 1.5s infinite; }
         @keyframes pulse-glow { 0% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(1.2); } 100% { opacity: 1; transform: scale(1); } }
-        
+
         .slider-label { text-align: center; color: var(--secondary); font-weight: 800; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 2px; margin-top: 25px; }
         .slider-section { background: #000; padding: 15px 0; border-bottom: 1px solid #222; overflow: hidden; position: relative; }
         .marquee { display: flex; width: max-content; animation: marquee-scroll 40s linear infinite; align-items:center; }
         .marquee img { height: 65px; width: 65px; border-radius: 50%; margin: 0 15px; border: 2px solid var(--primary); object-fit: cover; }
         @keyframes marquee-scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
-        
+
         nav { background: rgba(11,11,11,0.95); padding: var(--pad-s); position: sticky; top: 0; z-index: 100; backdrop-filter: blur(15px); border-bottom: 1px solid #333; text-align: center; }
         #beat-search { width: 90%; max-width: 500px; padding: 10px 20px; border-radius: 25px; border: 1px solid #444; background: #1a1a1a; color: white; outline: none; font-size: 0.95rem; }
 
-        .main-layout { display: grid; grid-template-columns: 1fr; gap: var(--gap); max-width: 1400px; margin: auto; padding: var(--pad-m); }
-        @media (min-width: 1024px) { .main-layout { grid-template-columns: 1fr 320px; gap: 30px; } }
+        /* Column Headers */
+        .column-headers { display: grid; grid-template-columns: 1fr 1fr; max-width: 1400px; margin: 15px auto 0; padding: 0 var(--pad-m); text-align: center; }
+        @media (max-width: 1024px) { .column-headers { grid-template-columns: 1fr; gap: 10px; } }
+        .col-title { color: var(--secondary); font-weight: 800; letter-spacing: 2px; font-size: 1.2rem; text-transform: uppercase; border-bottom: 2px solid #222; padding-bottom: 10px; }
 
-        /* --- GRID FOLDERS --- */
-        #beats-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; }
+        /* Split Layout */
+        .main-layout { display: grid; grid-template-columns: 1fr 320px; gap: var(--gap); max-width: 1400px; margin: auto; padding: var(--pad-m); }
+        .split-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; position: relative; }
+        .separator-bar { position: absolute; left: 50%; top: 0; bottom: 0; width: 1px; background: rgba(255, 255, 255, 0.05); transform: translateX(-50%); }
+
+        @media (max-width: 1024px) {
+            .main-layout { grid-template-columns: 1fr; }
+            .split-grid { grid-template-columns: 1fr; }
+            .separator-bar { display: none; }
+        }
+
+        .container-side { display: flex; flex-direction: column; gap: 20px; }
         .genre-folder { border: 1px solid #222; border-radius: 12px; overflow: hidden; background: #111; height: fit-content; }
         .genre-header { background: #1a1a1a; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; border-bottom: 1px solid #222; }
         .genre-header h2 { margin: 0; font-size: 0.9rem; color: var(--primary); text-transform: uppercase; }
-        
-        /* --- BEATS GRID INSIDE FOLDERS --- */
+
         .genre-content { display: none; padding: 15px; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px; }
         .genre-content.active { display: grid; }
 
         .media-card { background: var(--card-bg); padding: 15px; border-radius: 12px; border: 1px solid #222; position: relative; display: flex; flex-direction: column; justify-content: space-between;}
         .preview-badge { position: absolute; top: 8px; right: 8px; background: rgba(0, 242, 255, 0.1); color: var(--secondary); font-size: 0.5rem; padding: 2px 5px; border-radius: 4px; border: 1px solid var(--secondary); font-weight: 800;}
-        
+
+        .beat-meta { font-size: 0.65rem; color: var(--secondary); font-weight: 800; margin-top: 4px; display: flex; gap: 8px; opacity: 0.8; }
         .play-btn { background: var(--primary); border: none; width: 40px; height: 40px; border-radius: 50%; color: white; cursor: pointer; display:inline-flex; align-items:center; justify-content:center; margin: 5px auto;}
-        
+
         .purchase-options { margin-top: 10px; display: flex; flex-direction: column; gap: 6px; }
         .buy-btn { width: 100%; background: none; border: 1px solid var(--primary); padding: 6px; border-radius: 6px; color: var(--primary); cursor: pointer; font-weight: 800; font-size: 0.65rem; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 6px; }
         .buy-btn:hover { background: var(--primary); color: white; }
         .buy-btn.bonus-btn { border-color: var(--secondary); color: var(--secondary); }
         .buy-btn.bonus-btn:hover { background: var(--secondary); color: black; }
-        
-        /* --- FOOTER CONTACT SECTION --- */
+
+        .auth-timer { font-size: 0.8rem; color: var(--primary); font-weight: 800; margin: 10px 0; letter-spacing: 1px; }
+
         .footer-contact { margin-top: 60px; padding: 40px var(--pad-m); border-top: 1px solid #222; text-align: center; background: #000; }
         .footer-contact h3 { font-size: 0.8rem; text-transform: uppercase; color: var(--secondary); margin-bottom: 20px; letter-spacing: 2px; }
         .contact-wrap { display: flex; flex-wrap: wrap; justify-content: center; gap: 30px; }
@@ -107,22 +101,19 @@
         #master-player { position: fixed; bottom: 0; left: 0; width: 100%; height: 130px; background: rgba(0,0,0,0.95); border-top: 2px solid var(--secondary); display: none; flex-direction: column; padding: 10px 25px; z-index: 1000; box-sizing: border-box; backdrop-filter: blur(10px); }
         #waveform-container { width: 100%; height: 50px; margin-bottom: 10px; cursor: pointer; }
         .player-flex { display: flex; align-items: center; justify-content: space-between; width: 100%; }
-        
+
         .yt-premium-box { background: #111; padding: 20px; border-radius: 12px; text-align: center; border: 1px solid #333; margin-bottom: 20px; }
         .checkout-now { background: var(--whatsapp); color: black; border: none; padding: 12px; border-radius: 8px; width: 100%; cursor: pointer; font-weight: 800; }
-        
+
         #payment-modal, #auth-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 2000; align-items: center; justify-content: center; }
         .modal-content { background: var(--card-bg); padding: 30px; border-radius: 15px; width: 90%; max-width: 380px; text-align: center; border: 2px solid var(--secondary); }
         .m-input { width: 100%; padding: 12px; margin: 8px 0; border-radius: 8px; border: 1px solid #444; background: #000; color: white; text-align: center; box-sizing: border-box; }
         .loading-ring { width: 40px; height: 40px; border: 4px solid var(--secondary); border-top-color: transparent; border-radius: 50%; animation: spin 1s linear infinite; margin: 20px auto; }
         @keyframes spin { to { transform: rotate(360deg); } }
-
-        @media (max-width: 768px) { .top-right-auth { top: 15px; right: 15px; gap: 15px; } .footer-contact { padding-bottom: 160px; } }
     </style>
 </head>
 <body oncontextmenu="return false;">
 
-<!-- TOP RIGHT ACCOUNT ICONS -->
 <div class="top-right-auth" id="nav-auth-ui">
     <button class="auth-icon-btn" onclick="openAuth('signin')" title="Sign In">
         <i class="fas fa-user-circle"></i>
@@ -139,19 +130,34 @@
     <div class="studio-tag"><div class="pulse"></div> <span style="color: var(--secondary);">PRODUCED BY STEVE CHRISS MW</span></div>
 </header>
 
-<div class="slider-label">Our beats were used by:</div>
+<div class="slider-label">Our projects:</div>
 <div class="slider-section">
     <div class="marquee" id="artist-slider"></div>
 </div>
 
-<nav><input type="text" id="beat-search" placeholder="Search Trap, Afrobeat, Drill..." oninput="handleSearch()"></nav>
+<nav><input type="text" id="beat-search" placeholder="Search Genre, Song or Beat..." oninput="handleSearch()"></nav>
+
+<!-- Column Headers below Nav -->
+<div class="column-headers">
+    <div class="col-title">Music</div>
+    <div class="col-title">Beats</div>
+</div>
 
 <div class="main-layout">
-    <section id="beats-container"></section>
+    <!-- Grid Split -->
+    <div class="split-grid">
+        <div class="separator-bar"></div>
+
+        <!-- Left Side: Music -->
+        <section id="music-container" class="container-side"></section>
+
+        <!-- Right Side: Beats -->
+        <section id="beats-container" class="container-side"></section>
+    </div>
 
     <aside>
         <div class="yt-premium-box">
-            <h3 style="color:var(--secondary); font-size: 1rem;">FREE BEATS</h3>
+            <h3 style="color:var(--secondary); font-size: 1rem;">FREE CONTENT</h3>
             <a href="https://www.youtube.com/@stevechrissmw?sub_confirmation=1" target="_blank" class="buy-btn" style="text-decoration:none; display:block; background:#fff; color:#000; border:none;">SUBSCRIBE</a>
         </div>
         <div class="yt-premium-box">
@@ -195,6 +201,14 @@
             <p style="font-size:0.7rem; color:var(--primary); cursor:pointer; margin-top:10px; text-decoration:underline;" onclick="forgotPass()">Forgot Password?</p>
             <button class="buy-btn" style="border:none; color:var(--text-dim);" onclick="closeAuthModal()">Cancel</button>
         </div>
+        <div id="auth-2fa-ui" style="display:none">
+            <h2 style="color:var(--secondary); margin-top:0;">2-Step Verification</h2>
+            <p style="font-size:0.8rem;">We sent a 6-digit code to your email.</p>
+            <div id="auth-timer-display" class="auth-timer">EXPIRES IN: 02:00</div>
+            <input type="text" id="auth-otp" class="m-input" placeholder="Enter Code" maxlength="6">
+            <button class="checkout-now" onclick="verify2FA()">VERIFY & LOGIN</button>
+            <button class="buy-btn" style="border:none; color:var(--text-dim);" onclick="closeAuthModal()">Cancel</button>
+        </div>
         <div id="auth-processing" style="display:none">
             <div class="loading-ring"></div>
             <p id="proc-msg">Processing request...</p>
@@ -222,7 +236,9 @@
 </div>
 
 <script>
-// --- LOCAL STORAGE PERSISTENCE (HIDDEN FILE) ---
+// API Config maintained in code only
+const _rConfig = { s: "service_t7cblk3", t: "template_7nvo7c6" };
+
 const userDB = {
     save: (user) => {
         let users = JSON.parse(localStorage.getItem('rb_users')) || [];
@@ -237,38 +253,49 @@ const userDB = {
     logout: () => localStorage.removeItem('rb_session')
 };
 
-// --- RESTORED ALL FOLDERS ---
+// Seperated Data for Music and Beats
+const musicData = {
+    "Albums": [{ id: 501, name: "Legacy LP", file: "audio/music/legacy.mp3", bpm: "90", key: "C" }],
+    "Singles": [{ id: 502, name: "Neon City", file: "audio/music/neon.mp3", bpm: "128", key: "E" }],
+    "Hip Hop": [{ id: 5, name: "Legendary", file: "audio/hiphop/legend.mp3", bpm: 90, key: "C" }],
+    "Pop": [{ id: 7, name: "Radio Star", file: "audio/pop/star.mp3", bpm: 110, key: "D" }],
+    "EDM": [{ id: 6, name: "Neon Lights", file: "audio/edm/neon.mp3", bpm: 128, key: "E" }]
+};
+
 const beatsData = {
     "Trap": [
-        { id: 101, name: "Around", file: "audio/trap/around.mp3" },
-        { id: 102, name: "Attributes Sky", file: "audio/trap/attributes_sky.mp3" },
-        { id: 103, name: "Awareness", file: "audio/trap/awareness.mp3" },
-        { id: 104, name: "Galaxy", file: "audio/trap/galaxy.mp3" },
-        { id: 105, name: "Not Again", file: "audio/trap/not_again.mp3" },
-        { id: 106, name: "Nueva", file: "audio/trap/nueva.mp3" },
-        { id: 107, name: "Rappers Choice", file: "audio/trap/rappers_choice.mp3" },
-        { id: 108, name: "Space", file: "audio/trap/space.mp3" },
-        { id: 109, name: "To Ghettoh", file: "audio/trap/to_ghettoh.mp3" },
-        { id: 110, name: "Twilightlight", file: "audio/trap/twightlight.mp3" }
+        { id: 101, name: "Around", file: "audio/trap/around.mp3", bpm: 145, key: "Cm" },
+        { id: 102, name: "Attributes Sky", file: "audio/trap/attributes_sky.mp3", bpm: 130, key: "Fm" },
+        { id: 103, name: "Awareness", file: "audio/trap/awareness.mp3", bpm: 155, key: "Am" },
+        { id: 104, name: "Galaxy", file: "audio/trap/galaxy.mp3", bpm: 140, key: "Gm" },
+        { id: 105, name: "Not Again", file: "audio/trap/not_again.mp3", bpm: 132, key: "Dm" },
+        { id: 106, name: "Nueva", file: "audio/trap/nueva.mp3", bpm: 128, key: "F#m" },
+        { id: 107, name: "Rappers Choice", file: "audio/trap/rappers_choice.mp3", bpm: 148, key: "C#m" },
+        { id: 108, name: "Space", file: "audio/trap/space.mp3", bpm: 160, key: "Em" },
+        { id: 109, name: "To Ghettoh", file: "audio/trap/to_ghettoh.mp3", bpm: 138, key: "Bm" },
+        { id: 110, name: "Twilightlight", file: "audio/trap/twightlight.mp3", bpm: 144, key: "G#m" }
     ],
-    "Drill": [{ id: 2, name: "Storm Drill", file: "audio/drill/storm.mp3" }],
-    "Afrobeat": [{ id: 3, name: "Lagos Night", file: "audio/afro/lagos.mp3" }],
-    "Dancehall": [{ id: 4, name: "Island Riddim", file: "audio/dance/island.mp3" }],
-    "Hip Hop": [{ id: 5, name: "Legendary", file: "audio/hiphop/legend.mp3" }],
-    "EDM": [{ id: 6, name: "Neon Lights", file: "audio/edm/neon.mp3" }],
-    "Pop": [{ id: 7, name: "Radio Star", file: "audio/pop/star.mp3" }],
-    "Amapiano": [{ id: 8, name: "Piano Vibes", file: "audio/amapiano/vibes.mp3" }],
-    "Kwaito": [{ id: 9, name: "Summer Days", file: "audio/kwaito/summer.mp3" }],
-    "UK-Afro": [{ id: 10, name: "London Vibe", file: "audio/ukafro/london.mp3" }]
+    "Drill": [{ id: 2, name: "Storm Drill", file: "audio/drill/storm.mp3", bpm: 142, key: "Dm" }],
+    "Afrobeat": [{ id: 3, name: "Lagos Night", file: "audio/afro/lagos.mp3", bpm: 105, key: "G" }],
+    "Dancehall": [{ id: 4, name: "Island Riddim", file: "audio/dance/island.mp3", bpm: 98, key: "B" }],
+    "Amapiano": [{ id: 8, name: "Piano Vibes", file: "audio/amapiano/vibes.mp3", bpm: 113, key: "F" }],
+    "Kwaito": [{ id: 9, name: "Summer Days", file: "audio/kwaito/summer.mp3", bpm: 108, key: "A" }],
+    "UK-Afro": [{ id: 10, name: "London Vibe", file: "audio/ukafro/london.mp3", bpm: 102, key: "Bm" }]
 };
 
 const ws = WaveSurfer.create({
-    container: '#waveform-container', waveColor: '#333', progressColor: '#FF004C', cursorColor: '#00F2FF', barWidth: 2, height: 50, responsive: true, backend: 'WebAudio'
+    container: '#waveform-container',
+    waveColor: '#333',
+    progressColor: '#FF004C',
+    cursorColor: '#00F2FF',
+    barWidth: 2, height: 50, responsive: true, mediaControls: false
 });
 
-ws.on('audioprocess', () => { document.getElementById('m-time').innerText = fmt(ws.getCurrentTime()) + " / " + fmt(ws.getDuration()); });
+ws.on('audioprocess', () => {
+    document.getElementById('m-time').innerText = fmt(ws.getCurrentTime()) + " / " + fmt(ws.getDuration());
+});
 
-let cart = [], currentId = null, currentAuthMode = 'signin';
+let cart = [], currentId = null, currentAuthMode = 'signin', pendingUser = null, generatedOTP = null, authTimer = null;
 
 function init() {
     const slider = document.getElementById('artist-slider');
@@ -276,27 +303,35 @@ function init() {
     slider.innerHTML = artists.map(i => `<img src="artists/artist${i}.jpg" loading="lazy">`).join('') + artists.map(i => `<img src="artists/artist${i}.jpg" loading="lazy">`).join('');
     const session = userDB.getSession();
     if(session) updateAuthUI(session);
-    renderBeats();
+    renderGrid();
 }
 
-function renderBeats() {
-    const container = document.getElementById('beats-container');
+// Function to render both containers
+function renderGrid() {
+    renderSection('music-container', musicData);
+    renderSection('beats-container', beatsData);
+}
+
+function renderSection(elementId, data) {
+    const container = document.getElementById(elementId);
     const query = document.getElementById('beat-search').value.toLowerCase();
     container.innerHTML = '';
-    Object.keys(beatsData).sort().forEach(genre => {
-        const filtered = beatsData[genre].filter(b => b.name.toLowerCase().includes(query));
+
+    Object.keys(data).sort().forEach(genre => {
+        const filtered = data[genre].filter(b => b.name.toLowerCase().includes(query));
         if (filtered.length > 0) {
             const folder = document.createElement('div');
             folder.className = 'genre-folder';
             folder.innerHTML = `<div class="genre-header" onclick="this.nextElementSibling.classList.toggle('active')"><h2>${genre}</h2><i class="fas fa-chevron-down"></i></div>
             <div class="genre-content">${filtered.map(b => `
                 <div class="media-card">
-                    <span class="preview-badge">PREVIEW</span>
+                    <span class="preview-badge">${elementId.includes('music') ? 'SONG' : 'PREVIEW'}</span>
                     <h3 style="margin-top:0; font-size: 0.8rem;">${b.name}</h3>
+                    <div class="beat-meta"><span>${b.bpm} BPM</span> | <span>Key: ${b.key}</span></div>
                     <button class="play-btn" onclick="playB('${b.file}', '${b.name}', ${b.id})"><i class="fas fa-play" id="icon-${b.id}"></i></button>
                     <div class="purchase-options">
-                        <button class="buy-btn" onclick="addC(${b.id},'${b.name}', 10000, 'Lease')">MWK 10,000 <i class="fas fa-cart-plus"></i></button>
-                        <button class="buy-btn bonus-btn" onclick="addC(${b.id},'${b.name}', 25000, 'Bonus+Stems')">MWK 25,000 (with Bonus & Stems) <i class="fas fa-cart-plus"></i></button>
+                        <button class="buy-btn" onclick="addC(${b.id},'${b.name}', 10000, 'Digital')">MWK 10,000 <i class="fas fa-cart-plus"></i></button>
+                        ${!elementId.includes('music') ? `<button class="buy-btn bonus-btn" onclick="addC(${b.id},'${b.name}', 25000, 'Bonus+Stems')">MWK 25,000 <i class="fas fa-cart-plus"></i></button>` : ''}
                     </div>
                 </div>`).join('')}</div>`;
             container.appendChild(folder);
@@ -311,17 +346,40 @@ function playB(file, name, id) {
     document.getElementById('master-player').style.display = 'flex';
     document.getElementById('m-name').innerText = name;
     document.getElementById('m-btn').innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
-    ws.load(file);
-    ws.once('ready', () => { ws.play(); document.getElementById('m-btn').innerHTML = '<i class="fas fa-pause"></i>'; document.getElementById(`icon-${id}`).className = 'fas fa-pause'; });
+    ws.load(file).then(() => {
+        ws.play();
+        document.getElementById('m-btn').innerHTML = '<i class="fas fa-pause"></i>';
+        const beatIcon = document.getElementById(`icon-${id}`);
+        if(beatIcon) beatIcon.className = 'fas fa-pause';
+    }).catch(err => {
+        document.getElementById('m-btn').innerHTML = '<i class="fas fa-play"></i>';
+    });
 }
 
-function toggleM() { ws.playPause(); const isPlaying = ws.isPlaying(); document.getElementById('m-btn').innerHTML = isPlaying ? '<i class="fas fa-pause"></i>' : '<i class="fas fa-play"></i>'; if(currentId) document.getElementById(`icon-${currentId}`).className = isPlaying ? 'fas fa-pause' : 'fas fa-play'; }
+function toggleM() {
+    ws.playPause();
+    const isPlaying = ws.isPlaying();
+    document.getElementById('m-btn').innerHTML = isPlaying ? '<i class="fas fa-pause"></i>' : '<i class="fas fa-play"></i>';
+    if(currentId) {
+        const icon = document.getElementById(`icon-${currentId}`);
+        if(icon) icon.className = isPlaying ? 'fas fa-pause' : 'fas fa-play';
+    }
+}
 
 function fmt(s) { if(!isFinite(s)) return '0:00'; let m=Math.floor(s/60), r=Math.floor(s%60); return `${m}:${r<10?'0':''}${r}`; }
 
-// --- AUTH LOGIC ---
-function openAuth(mode) { currentAuthMode = mode; document.getElementById('auth-modal').style.display = 'flex'; document.getElementById('auth-title').innerText = mode === 'signin' ? 'Sign In' : 'Create Account'; }
-function closeAuthModal() { document.getElementById('auth-modal').style.display = 'none'; document.getElementById('auth-form-ui').style.display = 'block'; document.getElementById('auth-processing').style.display = 'none'; }
+function openAuth(mode) {
+    currentAuthMode = mode;
+    document.getElementById('auth-modal').style.display = 'flex';
+    document.getElementById('auth-title').innerText = mode === 'signin' ? 'Sign In' : 'Create Account';
+    document.getElementById('auth-form-ui').style.display = 'block';
+    document.getElementById('auth-2fa-ui').style.display = 'none';
+}
+
+function closeAuthModal() {
+    document.getElementById('auth-modal').style.display = 'none';
+    clearInterval(authTimer);
+}
 
 function handleAuthSubmit() {
     const email = document.getElementById('auth-email').value;
@@ -329,11 +387,46 @@ function handleAuthSubmit() {
     if(!email || !pass) return alert("Fill all details!");
     document.getElementById('auth-form-ui').style.display = 'none';
     document.getElementById('auth-processing').style.display = 'block';
+
     setTimeout(() => {
-        if(currentAuthMode === 'register') { userDB.save({email, pass}); userDB.setSession({email}); alert("Account created! Notifications will be sent to " + email); }
-        else { const user = userDB.verify(email, pass); if(user) { userDB.setSession(user); alert("Welcome back!"); } else { alert("Error: Account not found!"); closeAuthModal(); return; } }
-        updateAuthUI({email}); closeAuthModal();
-    }, 2000);
+        if(currentAuthMode === 'signin') {
+            const user = userDB.verify(email, pass);
+            if(!user) { alert("Invalid credentials!"); closeAuthModal(); return; }
+            pendingUser = user;
+        } else { pendingUser = {email, pass}; }
+
+        generatedOTP = Math.floor(100000 + Math.random() * 900000).toString();
+        emailjs.send(_rConfig.s, _rConfig.t, {
+            customer_email: email, customer_name: "User", beat_list: `PIN: ${generatedOTP}`, total_amount: "AUTH"
+        }).then(() => {
+            document.getElementById('auth-processing').style.display = 'none';
+            document.getElementById('auth-2fa-ui').style.display = 'block';
+            startTimer();
+        }).catch(() => { alert("Email Error"); closeAuthModal(); });
+    }, 1500);
+}
+
+function startTimer() {
+    let timeLeft = 120;
+    const display = document.getElementById('auth-timer-display');
+    clearInterval(authTimer);
+    authTimer = setInterval(() => {
+        let mins = Math.floor(timeLeft / 60);
+        let secs = timeLeft % 60;
+        display.innerText = `EXPIRES IN: 0${mins}:${secs < 10 ? '0' : ''}${secs}`;
+        if (timeLeft-- <= 0) { clearInterval(authTimer); alert("Expired"); closeAuthModal(); }
+    }, 1000);
+}
+
+function verify2FA() {
+    if(document.getElementById('auth-otp').value === generatedOTP) {
+        clearInterval(authTimer);
+        if(currentAuthMode === 'register') userDB.save(pendingUser);
+        userDB.setSession({email: pendingUser.email});
+        updateAuthUI({email: pendingUser.email});
+        closeAuthModal();
+        location.reload();
+    } else { alert("Wrong Code"); }
 }
 
 function updateAuthUI(user) {
@@ -343,21 +436,19 @@ function updateAuthUI(user) {
 }
 
 function logout() { userDB.logout(); window.location.reload(); }
-function forgotPass() { alert("Password reset link requested. Check your email inbox shortly."); }
+function forgotPass() { alert("Request sent."); }
 
-// --- CART & PAYMENT ---
-function addC(id, n, price, type) { 
+function addC(id, n, price, type) {
     const fullName = `${n} (${type})`;
-    if(!cart.find(i => i.n === fullName)) { cart.push({id, n: fullName, p: price}); renderC(); } else { alert("Already in cart"); } 
+    if(!cart.find(i => i.n === fullName)) { cart.push({id, n: fullName, p: price}); renderC(); }
 }
 function renderC() {
     document.getElementById('cart-list').innerHTML = cart.map((i, idx) => `<div style="display:flex; justify-content:space-between; margin-bottom:5px;"><span>${i.n}</span><i class="fas fa-trash" onclick="removeFromCart(${idx})" style="color:red; cursor:pointer"></i></div>`).join('');
-    const total = cart.reduce((a,b)=>a+b.p,0).toLocaleString();
-    document.getElementById('cart-total').innerText = "K" + total;
+    document.getElementById('cart-total').innerText = "K" + cart.reduce((a,b)=>a+b.p,0).toLocaleString();
 }
 function removeFromCart(index) { cart.splice(index, 1); renderC(); }
-function checkout() { if (cart.length === 0) return alert("Cart is empty!"); document.getElementById('payment-modal').style.display = 'flex'; }
-function closePayment() { document.getElementById('payment-modal').style.display = 'none'; document.getElementById('pay-step-1').style.display = 'block'; document.getElementById('pay-step-2').style.display = 'none'; }
+function checkout() { if (cart.length === 0) return alert("Empty!"); document.getElementById('payment-modal').style.display = 'flex'; }
+function closePayment() { document.getElementById('payment-modal').style.display = 'none'; }
 
 function goToStep2() {
     const name = document.getElementById('customer-name').value;
@@ -370,14 +461,14 @@ function goToStep2() {
 }
 
 function sendOrderEmail(cName, cEmail) {
-    const templateParams = { customer_email: cEmail, customer_name: cName, beat_list: cart.map(item => item.n).join(", "), total_amount: document.getElementById('cart-total').innerText, payment_method: document.getElementById('network-type').value };
-    emailjs.send("service_t7cblk3", "template_7nvo7c6", templateParams).then(function() {
-        alert("PAYMENT SUCCESS! Beats sent to " + cEmail);
-        cart = []; renderC(); closePayment();
-    }, function(error) { alert("Network Error: Email delivery failed."); });
+    emailjs.send(_rConfig.s, _rConfig.t, {
+        customer_email: cEmail, customer_name: cName,
+        beat_list: cart.map(item => item.n).join(", "),
+        total_amount: document.getElementById('cart-total').innerText
+    }).then(() => { alert("SUCCESS!"); cart = []; renderC(); closePayment(); });
 }
 
-function handleSearch() { renderBeats(); }
+function handleSearch() { renderGrid(); }
 window.onload = init;
 </script>
 </body>
