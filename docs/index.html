@@ -4,12 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Redbooth Studios | Premium Beats</title>
+    <!-- Essential Libraries -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://unpkg.com/wavesurfer.js@7"></script>
+    <!-- EmailJS SDK -->
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <script type="text/javascript">
-        (function(){ emailjs.init("YOUR_PUBLIC_KEY"); })(); // Replace with your Public Key
+        (function(){ 
+            // REPLACE "YOUR_PUBLIC_KEY" with your actual Public Key from EmailJS Account settings
+            emailjs.init("YOUR_PUBLIC_KEY"); 
+        })();
     </script>
 
     <style>
@@ -157,25 +162,24 @@
 <div id="payment-modal">
     <div class="modal-content">
         <div id="pay-step-1">
-            <h2 style="color:var(--secondary); margin-top:0;">Mobile Money</h2>
-            <p style="font-size: 0.7rem; color: var(--text-dim);">Enter email for receipt delivery</p>
-            <input type="email" id="customer-email" class="m-input" placeholder="Receipt Email">
-            <select id="network-type" class="m-input"><option value="airtel">Airtel Money</option><option value="tnm">TNM Mpamba</option></select>
-            <input type="tel" id="user-phone" class="m-input" placeholder="099 / 088..." maxlength="10">
+            <h2 style="color:var(--secondary); margin-top:0;">Checkout</h2>
+            <input type="text" id="customer-name" class="m-input" placeholder="Your Full Name">
+            <input type="email" id="customer-email" class="m-input" placeholder="Delivery Email">
+            <select id="network-type" class="m-input"><option value="Airtel Money">Airtel Money</option><option value="TNM Mpamba">TNM Mpamba</option></select>
+            <input type="tel" id="user-phone" class="m-input" placeholder="Phone (099/088...)" maxlength="10">
             <button class="buy-btn checkout-now" onclick="goToStep2()">PAY NOW</button>
             <button class="buy-btn" style="border:none; color:var(--text-dim);" onclick="closePayment()">Cancel</button>
         </div>
         <div id="pay-step-2" style="display:none;">
             <h2 style="color:var(--whatsapp);">Awaiting PIN</h2>
             <div class="loading-ring"></div>
-            <p style="font-size:0.8rem;">Please enter your Mobile Money PIN on your phone to complete the purchase of <span id="final-total" style="color:var(--secondary)">K0</span>.</p>
+            <p style="font-size:0.8rem;">Please enter your Mobile Money PIN on your phone to complete purchase of <span id="final-total" style="color:var(--secondary)">K0</span>.</p>
             <p id="payment-status" style="font-size: 0.7rem; color: var(--secondary); margin-top: 10px;"></p>
         </div>
-    </section>
+    </div>
 </div>
 
 <script>
-// --- AUDIT: Standardized Lowercase File Paths ---
 const beatsData = {
     "Trap": [
         { id: 101, name: "Around", price: 10000, file: "audio/trap/around.mp3" },
@@ -211,17 +215,14 @@ const ws = WaveSurfer.create({
     backend: 'WebAudio'
 });
 
-ws.on('audioprocess', () => {
-    document.getElementById('m-time').innerText = fmt(ws.getCurrentTime()) + " / " + fmt(ws.getDuration());
-});
+ws.on('audioprocess', () => { document.getElementById('m-time').innerText = fmt(ws.getCurrentTime()) + " / " + fmt(ws.getDuration()); });
 
 let cart = [], currentId = null, currentAuthMode = 'signin';
 
 function init() {
     const slider = document.getElementById('artist-slider');
     const artists = [1,2,3,4,5,6,7,8];
-    slider.innerHTML = artists.map(i => `<img src="artists/artist${i}.jpg" loading="lazy" onerror="this.src='https://via.placeholder.com/65'">`).join('') +
-                       artists.map(i => `<img src="artists/artist${i}.jpg" loading="lazy">`).join('');
+    slider.innerHTML = artists.map(i => `<img src="artists/artist${i}.jpg" loading="lazy">`).join('') + artists.map(i => `<img src="artists/artist${i}.jpg" loading="lazy">`).join('');
     renderBeats();
 }
 
@@ -274,23 +275,9 @@ function toggleM() {
 
 function fmt(s) { if(!isFinite(s)) return '0:00'; let m=Math.floor(s/60), r=Math.floor(s%60); return `${m}:${r<10?'0':''}${r}`; }
 
-function openAuth(mode) {
-    currentAuthMode = mode;
-    document.getElementById('auth-modal').style.display = 'flex';
-    document.getElementById('auth-title').innerText = mode === 'signin' ? 'VIP Sign In' : 'VIP Registration';
-}
-function closeAuthModal() { document.getElementById('auth-modal').style.display = 'none'; document.getElementById('auth-loading').style.display = 'none'; document.getElementById('auth-form').style.display = 'block'; }
-
-function handleAuthSubmit() {
-    const email = document.getElementById('auth-email').value;
-    if(!email) return alert("Please enter email");
-    document.getElementById('auth-form').style.display = 'none';
-    document.getElementById('auth-loading').style.display = 'block';
-    setTimeout(() => {
-        alert("Success! Check email for VIP perks.");
-        closeAuthModal();
-    }, 2000);
-}
+function openAuth(mode) { currentAuthMode = mode; document.getElementById('auth-modal').style.display = 'flex'; }
+function closeAuthModal() { document.getElementById('auth-modal').style.display = 'none'; }
+function handleAuthSubmit() { alert("Success! Check email for VIP perks."); closeAuthModal(); }
 
 function addC(id, n, p) { if(!cart.find(i => i.n === n)) { cart.push({id, n, p}); renderC(); } else { alert("Already in cart"); } }
 function renderC() {
@@ -301,62 +288,43 @@ function renderC() {
 function removeFromCart(index) { cart.splice(index, 1); renderC(); }
 
 function checkout() { if (cart.length === 0) return alert("Your cart is empty!"); document.getElementById('payment-modal').style.display = 'flex'; }
-function closePayment() {
-    document.getElementById('payment-modal').style.display = 'none';
-    document.getElementById('pay-step-1').style.display = 'block';
-    document.getElementById('pay-step-2').style.display = 'none';
-}
+function closePayment() { document.getElementById('payment-modal').style.display = 'none'; document.getElementById('pay-step-1').style.display = 'block'; document.getElementById('pay-step-2').style.display = 'none'; }
 
-// --- UPDATED: Automated Delivery Logic ---
+// --- AUTOMATED EMAIL DELIVERY ---
 function goToStep2() {
-    const phone = document.getElementById('user-phone').value;
+    const name = document.getElementById('customer-name').value;
     const email = document.getElementById('customer-email').value;
-    if(phone.length < 10 || !email.includes('@')) return alert("Enter valid phone and email!");
+    const phone = document.getElementById('user-phone').value;
+    if(!name || !email.includes('@') || phone.length < 10) return alert("Fill all details!");
 
     document.getElementById('pay-step-1').style.display = 'none';
     document.getElementById('pay-step-2').style.display = 'block';
     document.getElementById('final-total').innerText = document.getElementById('cart-total').innerText;
 
-    // Simulate Payment Verification (5 seconds)
-    setTimeout(() => {
-        sendDeliveryEmail(email);
-    }, 5000);
+    setTimeout(() => { sendOrderEmail(name, email); }, 5000);
 }
 
-function sendDeliveryEmail(customerEmail) {
-    document.getElementById('payment-status').innerText = "Payment Verified! Sending files...";
-
-    // Format cart items for the email
-    const itemsOrdered = cart.map(item => `${item.n} (K${item.p})`).join(", ");
-    const total = document.getElementById('cart-total').innerText;
-
+function sendOrderEmail(cName, cEmail) {
+    document.getElementById('payment-status').innerText = "Payment Verified! Delivering beats...";
+    
+    // Variables matched exactly to your screenshot
     const templateParams = {
-        to_email: customerEmail,
-        order_items: itemsOrdered,
-        total_amount: total,
-        download_links: "Your high-quality files are attached to this order vault.",
-        license_type: "Standard Premium Lease (Non-exclusive)",
-        invoice_id: "RB-" + Math.floor(Math.random() * 100000)
+        customer_email: cEmail,
+        customer_name: cName,
+        beat_list: cart.map(item => item.n).join(", "),
+        total_amount: document.getElementById('cart-total').innerText,
+        payment_method: document.getElementById('network-type').value
     };
 
     emailjs.send("service_t7cblk3", "template_7nvo7c6", templateParams)
-    .then(function(response) {
-        alert("SUCCESS! Payment Complete. Check your email for your Beats and License.");
-        cart = [];
-        renderC();
-        closePayment();
+    .then(function() {
+        alert("PAYMENT SUCCESS! Your beats and receipt have been sent to " + cEmail);
+        cart = []; renderC(); closePayment();
     }, function(error) {
-        alert("Payment verified, but email failed. Contact Steve Chriss on WhatsApp.");
+        alert("Payment verified, but email failed. Contact Steve Chriss.");
         console.error("EmailJS Error:", error);
     });
 }
-
-// Audio Protection: Disable keyboard shortcuts
-document.addEventListener('keydown', e => {
-    if (e.key === "F12" || (e.ctrlKey && e.shiftKey && e.key === "I") || (e.ctrlKey && e.key === "u")) {
-        e.preventDefault();
-    }
-});
 
 function handleSearch() { renderBeats(); }
 window.onload = init;
