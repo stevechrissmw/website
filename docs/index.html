@@ -61,7 +61,6 @@
         .media-card { background: var(--card-bg); padding: 20px; border-radius: 12px; border: 1px solid #222; }
         .play-btn { background: var(--primary); border: none; width: 42px; height: 42px; border-radius: 50%; color: white; cursor: pointer; display:inline-flex; align-items:center; justify-content:center; }
 
-        /* --- Shifted Bottom Menus to Center --- */
         .bottom-features {
             display: grid;
             grid-template-columns: 1fr;
@@ -195,9 +194,19 @@
 </div>
 
 <script>
-// --- Restored All Genres Folders ---
 const beatsData = {
-    "Trap": [{ id: 1, name: "Galaxy", price: 10000, file: "audio/trap/Galaxy.mp3" }],
+    "Trap": [
+        { id: 101, name: "Around", price: 10000, file: "audio/trap/Around.mp3" },
+        { id: 102, name: "Attributes Sky", price: 10000, file: "audio/trap/Attributes_Sky.mp3" },
+        { id: 103, name: "Awareness", price: 10000, file: "audio/trap/Awareness.mp3" },
+        { id: 104, name: "Galaxy", price: 10000, file: "audio/trap/Galaxy.mp3" },
+        { id: 105, name: "Not Again", price: 10000, file: "audio/trap/Not_Again.mp3" },
+        { id: 106, name: "Nueva", price: 10000, file: "audio/trap/Nueva.mp3" },
+        { id: 107, name: "Rappers Choice", price: 10000, file: "audio/trap/Rappers_Choice.mp3" },
+        { id: 108, name: "Space", price: 10000, file: "audio/trap/Space.mp3" },
+        { id: 109, name: "To Ghettoh", price: 10000, file: "audio/trap/To_Ghettoh.mp3" },
+        { id: 110, name: "Twilightlight", price: 10000, file: "audio/trap/Twightlight.mp3" }
+    ],
     "Drill": [{ id: 2, name: "Storm Drill", price: 12000, file: "audio/drill/Storm.mp3" }],
     "Afrobeat": [{ id: 3, name: "Lagos Night", price: 15000, file: "audio/afro/Lagos.mp3" }],
     "Dancehall": [{ id: 4, name: "Island Riddim", price: 10000, file: "audio/dance/Island.mp3" }],
@@ -286,7 +295,6 @@ function seekM(s) { if(currentAudio) currentAudio.currentTime = (s.value/100) * 
 function volM(s) { if(currentAudio) currentAudio.volume = s.value; }
 function addC(id, n, p) { if(!cart.find(i => i.n === n)) { cart.push({n, p}); renderC(); } else { alert("Already in cart"); } }
 
-// --- Updated with Trash/Bin Icon ---
 function renderC() {
     document.getElementById('cart-list').innerHTML = cart.map((i, idx) => `
         <div style="display:flex; justify-content:space-between; margin-bottom:5px;">
